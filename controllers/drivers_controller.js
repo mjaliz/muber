@@ -5,6 +5,19 @@ module.exports = {
     res.send({ hi: "there" });
   },
 
+  index(req, res, next) {
+    const { lng, lat } = req.query;
+
+    Driver.where("geometry")
+      .near({
+        center: [lng, lat],
+        spherical: true,
+        maxDistance: 200000,
+      })
+      .then((drivers) => res.send(drivers))
+      .catch(next);
+  },
+
   create(req, res, next) {
     const driverProps = req.body;
     Driver.create(driverProps)
